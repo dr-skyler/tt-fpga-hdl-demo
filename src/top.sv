@@ -46,7 +46,7 @@ endmodule
 // Debouncing is based on a counter. A change to any input will only be recognized once ALL inputs
 // are stable for a certain duration. This approach uses a single counter vs. a counter for each
 // bit.
-module tt_um_fpga_hdl_demo (
+module tt_um_template (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
     /*   // The FPGA is based on TinyTapeout 3 which has no bidirectional I/Os (vs. TT6 for the ASIC).
@@ -431,7 +431,7 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
                                         FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
-                                        (FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 == 2'b10 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 2'b11) ? 4'b0 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 == 4'b0010 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b0011) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b1001) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1;
             
