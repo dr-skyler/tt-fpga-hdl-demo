@@ -3,7 +3,7 @@
 //_\SV
    // Include Tiny Tapeout Lab.
    // Included URL: "https://raw.githubusercontent.com/os-fpga/Virtual-FPGA-Lab/35e36bd144fddd75495d4cbc01c4fc50ac5bde6f/tlv_lib/tiny_tapeout_lib.tlv"// Included URL: "https://raw.githubusercontent.com/os-fpga/Virtual-FPGA-Lab/a069f1e4e19adc829b53237b3e0b5d6763dc3194/tlv_lib/fpga_includes.tlv"
-//_\source top.tlv 178
+//_\source top.tlv 179
 
 //_\SV
 // ================================================
@@ -15,7 +15,7 @@ module top(input logic clk, input logic reset, input logic [31:0] cyc_cnt, outpu
    logic [7:0] ui_in, uo_out;
    
    logic [31:0] r;
-   always @(posedge clk) r <= 0;
+   always @(posedge clk) r <= $urandom();
    // assign ui_in = 8'b00000001;
    
    logic ena = 1'b0;
@@ -35,7 +35,7 @@ module top(input logic clk, input logic reset, input logic [31:0] cyc_cnt, outpu
    end
    */
    // Instantiate the Tiny Tapeout module.
-   my_design tt(.*);
+   m5_user_module_name tt(.*);
 
    //assign passed = top.cyc_cnt > 60;
    assign failed = 1'b0;
@@ -46,7 +46,7 @@ endmodule
 // Debouncing is based on a counter. A change to any input will only be recognized once ALL inputs
 // are stable for a certain duration. This approach uses a single counter vs. a counter for each
 // bit.
-module tt_um_template (
+module m5_my_design (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
     /*   // The FPGA is based on TinyTapeout 3 which has no bidirectional I/Os (vs. TT6 for the ASIC).
@@ -67,7 +67,7 @@ module tt_um_template (
     end
 
     // Debounce.
-    `define DEBOUNCE_MAX_CNT 14'h3fff
+    `define DEBOUNCE_MAX_CNT 14'h8
     logic [9:0] inputs_candidate, inputs_captured;
     logic sync_rst_n = inputs_sync[0];
     logic [13:0] cnt;
@@ -101,7 +101,7 @@ endmodule
 // =======================
 // The Tiny Tapeout module
 // =======================
-module my_design (
+module m5_user_module_name (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
     /*   // The FPGA is based on TinyTapeout 3 which has no bidirectional I/Os (vs. TT6 for the ASIC).
@@ -338,7 +338,7 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
 //_\TLV
    /* verilator lint_off UNOPTFLAT */
    // Connect Tiny Tapeout I/Os to Virtual FPGA Lab.
-   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/35e36bd144fddd75495d4cbc01c4fc50ac5bde6f/tlvlib/tinytapeoutlib.tlv 76   // Instantiated from top.tlv, 238 as: m5+tt_connections()
+   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/35e36bd144fddd75495d4cbc01c4fc50ac5bde6f/tlvlib/tinytapeoutlib.tlv 76   // Instantiated from top.tlv, 239 as: m5+tt_connections()
       assign L0_slideswitch_a0[7:0] = ui_in;
       assign L0_sseg_segment_n_a0[6:0] = ~ uo_out[6:0];
       assign L0_sseg_decimal_point_n_a0 = ~ uo_out[7];
@@ -346,7 +346,7 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
    //_\end_source
 
    // Instantiate the Virtual FPGA Lab.
-   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/a069f1e4e19adc829b53237b3e0b5d6763dc3194/tlvlib/fpgaincludes.tlv 307   // Instantiated from top.tlv, 241 as: m5+board(/top, /fpga, 7, $, , clock)
+   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/a069f1e4e19adc829b53237b3e0b5d6763dc3194/tlvlib/fpgaincludes.tlv 307   // Instantiated from top.tlv, 242 as: m5+board(/top, /fpga, 7, $, , clock)
       
       //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/a069f1e4e19adc829b53237b3e0b5d6763dc3194/tlvlib/fpgaincludes.tlv 355   // Instantiated from /raw.githubusercontent.com/osfpga/VirtualFPGALab/a069f1e4e19adc829b53237b3e0b5d6763dc3194/tlvlib/fpgaincludes.tlv, 309 as: m4+thanks(m5__l(309)m5_eval(m5_get(BOARD_THANKS_ARGS)))
          //_/thanks
@@ -405,11 +405,12 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
                      // ======================================================
             
                      assign FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0:
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0) ? 4'b0 :
-                                        FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 + 1 :
-                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1;
+                                        !FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
+                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 + 1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
+                                        !FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 :
                                         (FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1;
@@ -532,7 +533,7 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
       
    //_\end_source
    // Label the switch inputs [0..7] (1..8 on the physical switch panel) (top-to-bottom).
-   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/35e36bd144fddd75495d4cbc01c4fc50ac5bde6f/tlvlib/tinytapeoutlib.tlv 82   // Instantiated from top.tlv, 243 as: m5+tt_input_labels_viz(⌈"Value[0]", "Value[1]", "Value[2]", "Value[3]", "Op[0]", "Op[1]", "Op[2]", "="⌉)
+   //_\source /raw.githubusercontent.com/osfpga/VirtualFPGALab/35e36bd144fddd75495d4cbc01c4fc50ac5bde6f/tlvlib/tinytapeoutlib.tlv 82   // Instantiated from top.tlv, 244 as: m5+tt_input_labels_viz(⌈"Value[0]", "Value[1]", "Value[2]", "Value[3]", "Op[0]", "Op[1]", "Op[2]", "="⌉)
       for (input_label = 0; input_label <= 7; input_label++) begin : L1_InputLabel //_/input_label
          
       end
