@@ -405,9 +405,9 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
                      // ======================================================
             
                      assign FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0:
-                                        !FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 :
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
-                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 + 1;
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0) ? 4'b0 :
+                                        FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 + 1 :
+                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
