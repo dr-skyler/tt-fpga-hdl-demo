@@ -167,8 +167,7 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a0,
 
 // For /fpga_pins/fpga|clock_time$ones_digit_sec.
 logic [3:0] FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a0,
-            FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1,
-            FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a2;
+            FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1;
 
 // For /fpga_pins/fpga|clock_time$pulse.
 logic FpgaPins_Fpga_CLOCK_TIME_pulse_a0;
@@ -228,7 +227,6 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
 
             // Staging of $ones_digit_sec.
             always_ff @(posedge clk) FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1[3:0] <= FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a0[3:0];
-            always_ff @(posedge clk) FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a2[3:0] <= FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1[3:0];
 
             // Staging of $tens_digit_hr.
             always_ff @(posedge clk) FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1[3:0] <= FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a0[3:0];
@@ -407,34 +405,34 @@ logic [3:0] FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0,
                      // ======================================================
             
                      assign FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0:
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a2 == 4'b1001) ? 4'b0 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
                                         FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? 4'b0 :
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 + 1 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0:
                                         (FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001) ? 4'b0 :
-                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 == 4'b0101 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 + 1 :
+                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_sec_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_tens_digit_sec_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001) ? 4'b0 :
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1 + 1 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b1001) ? 4'b0 :
                                         FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b0011 && FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 == 4'b0010 ? 4'b0 :
-                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1 == 4'b0101 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 + 1 :
+                                        FpgaPins_Fpga_CLOCK_TIME_ones_digit_min_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_tens_digit_min_a1 == 4'b0101 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0 ? FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1;
             
                      assign FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a0[3:0] = (FpgaPins_Fpga_CLOCK_TIME_reset_a0) ? 4'b0 :
                                         (FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 == 4'b0010 && FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b0011) ? 4'b0 :
-                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b1001) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 + 1 :
+                                        (FpgaPins_Fpga_CLOCK_TIME_ones_digit_hr_a1 == 4'b1001 && FpgaPins_Fpga_CLOCK_TIME_pulse_a0) ? FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1 + 1 :
                                         FpgaPins_Fpga_CLOCK_TIME_tens_digit_hr_a1;
             
                      // ======================================================
