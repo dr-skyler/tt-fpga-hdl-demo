@@ -401,7 +401,7 @@ logic [6:0] FpgaPins_Fpga_CLOCK_TIME_showbits_a0;
                      assign FpgaPins_Fpga_CLOCK_TIME_frequency_a0[24:0] = ui_in[0] ? 25'd10000000:
                                         ui_in[1] ? 25'd12000000:
                                         ui_in[2] ? 25'd14000000:
-                                                    25'd20000000;
+                                                    25'd00020000;
             
                      //$frequency[24:0] = 25'd00000001;
                      //for waveform reading lol
